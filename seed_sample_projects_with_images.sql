@@ -5,7 +5,7 @@ INSERT INTO `projects` (`title`, `description`, `department`, `grad_year`, `tech
 (
   'نظام إدارة المختبرات الذكي',
   'أتمتة حجوزات المختبرات ومتابعة الأجهزة عبر لوحة تحكم ويب مع تقارير استخدام.',
-  'علوم الحاسب',
+  'علوم حاسوب',
   2026,
   'PHP, MySQL, JavaScript',
   'https://picsum.photos/id/48/600/850',
@@ -16,7 +16,7 @@ INSERT INTO `projects` (`title`, `description`, `department`, `grad_year`, `tech
 (
   'تطبيق تتبع المخزون الصيدلاني',
   'واجهة لأرشفة الأدوية مع تنبيهات انتهاء الصلاحية وتقارير شهرية للمشرف.',
-  'نظم المعلومات',
+  'هندسة برمجيات',
   2025,
   'PHP, MySQL, Tailwind CSS',
   'https://picsum.photos/id/96/600/800',
@@ -27,7 +27,7 @@ INSERT INTO `projects` (`title`, `description`, `department`, `grad_year`, `tech
 (
   'بوابة مشاريع التخرج الجامعية',
   'منصة للطلاب لعرض مشاريعهم وربطها بالأقسام الأكاديمية مع بحث وتصفية.',
-  'تقنية المعلومات',
+  'علوم حاسوب',
   2026,
   'HTML, CSS, PHP, MySQL',
   NULL,
@@ -38,7 +38,7 @@ INSERT INTO `projects` (`title`, `description`, `department`, `grad_year`, `tech
 (
   'لوحة تحليلات بيانات تعليمية',
   'تجسيد بسيط لإحصائيات التسجيل والأداء باستخدام رسوم تفاعلية.',
-  'علوم الحاسب',
+  'هندسة برمجيات',
   2025,
   'PHP, MySQL, Chart.js',
   'https://picsum.photos/id/24/640/900',
