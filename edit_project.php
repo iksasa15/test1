@@ -1,6 +1,7 @@
 <?php
 session_start();
 include 'db_connect.php';
+require_once __DIR__ . '/helpers.php';
 
 if (!isset($_SESSION['admin_logged_in'])) {
     header("Location: login.php");
@@ -51,9 +52,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (move_uploaded_file($_FILES['project_image']['tmp_name'], $upload_path)) {
                 $update_sql .= ", image_url='$new_image_name'";
                 
-                if (!empty($project['image_url']) && $project['image_url'] != 'default.jpg') {
-                    $old_img_path = "uploads/" . $project['image_url'];
-                    if (file_exists($old_img_path)) unlink($old_img_path);
+                if (!empty($project['image_url']) && $project['image_url'] != 'default.jpg' && !project_is_remote_url($project['image_url'])) {
+                    $old_img_path = 'uploads/' . $project['image_url'];
+                    if (file_exists($old_img_path)) {
+                        unlink($old_img_path);
+                    }
                 }
             }
         } else {
@@ -74,9 +77,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (move_uploaded_file($_FILES['poster_image']['tmp_name'], $upload_path)) {
                 $update_sql .= ", project_poster='$new_poster_name'";
                 
-                if (!empty($project['project_poster'])) {
-                    $old_poster_path = "uploads/" . $project['project_poster'];
-                    if (file_exists($old_poster_path)) unlink($old_poster_path);
+                if (!empty($project['project_poster']) && !project_is_remote_url($project['project_poster'])) {
+                    $old_poster_path = 'uploads/' . $project['project_poster'];
+                    if (file_exists($old_poster_path)) {
+                        unlink($old_poster_path);
+                    }
                 }
             }
         } else {
@@ -96,9 +101,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (move_uploaded_file($_FILES['project_pdf']['tmp_name'], $pdf_upload_path)) {
                 $update_sql .= ", pdf_file='$new_pdf_name'";
 
-                if (!empty($project['pdf_file'])) {
-                    $old_pdf_path = "uploads/documents/" . $project['pdf_file'];
-                    if (file_exists($old_pdf_path)) unlink($old_pdf_path);
+                if (!empty($project['pdf_file']) && !project_is_remote_url($project['pdf_file'])) {
+                    $old_pdf_path = 'uploads/documents/' . $project['pdf_file'];
+                    if (file_exists($old_pdf_path)) {
+                        unlink($old_pdf_path);
+                    }
                 }
             } else {
                 $message = "<div style='color:red; margin-bottom:15px;'>حدث خطأ أثناء رفع ملف الـ PDF.</div>";
@@ -120,9 +127,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (move_uploaded_file($_FILES['poster_pdf']['tmp_name'], $pdf_upload_path)) {
                 $update_sql .= ", project_poster_pdf='$new_poster_pdf_name'";
 
-                if (!empty($project['project_poster_pdf'])) {
-                    $old_poster_pdf_path = "uploads/documents/" . $project['project_poster_pdf'];
-                    if (file_exists($old_poster_pdf_path)) unlink($old_poster_pdf_path);
+                if (!empty($project['project_poster_pdf']) && !project_is_remote_url($project['project_poster_pdf'])) {
+                    $old_poster_pdf_path = 'uploads/documents/' . $project['project_poster_pdf'];
+                    if (file_exists($old_poster_pdf_path)) {
+                        unlink($old_poster_pdf_path);
+                    }
                 }
             } else {
                 $message = "<div style='color:red; margin-bottom:15px;'>حدث خطأ أثناء رفع ملف بوستر الـ PDF.</div>";
@@ -214,8 +223,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 <div class="form-group" style="background: #f9fafb; padding: 15px; border-radius: 8px; border: 1px dashed #ccc; margin-bottom: 15px;">
                     <label>صورة واجهة المشروع الحالية</label>
-                    <?php if(!empty($project['image_url']) && $project['image_url'] != 'default.jpg'): ?>
-                        <img src="uploads/<?php echo $project['image_url']; ?>" alt="صورة المشروع" class="current-image-preview">
+                    <?php if (!empty($project['image_url']) && $project['image_url'] != 'default.jpg'): ?>
+                        <img src="<?php echo htmlspecialchars(project_public_src($project['image_url'], 'placeholder.jpg')); ?>" alt="صورة المشروع" class="current-image-preview">
                     <?php else: ?>
                         <p style="color: #666; font-size: 14px;">يستخدم هذا المشروع الصورة الافتراضية.</p>
                     <?php endif; ?>
@@ -227,8 +236,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 <div class="form-group" style="background: #f9fafb; padding: 15px; border-radius: 8px; border: 1px dashed #ccc; margin-bottom: 15px;">
                     <label>صورة بوستر المشروع الحالية</label>
-                    <?php if(!empty($project['project_poster'])): ?>
-                        <img src="uploads/<?php echo $project['project_poster']; ?>" alt="بوستر المشروع" class="current-image-preview">
+                    <?php if (!empty($project['project_poster'])): ?>
+                        <img src="<?php echo htmlspecialchars(project_public_src($project['project_poster'], 'placeholder.jpg')); ?>" alt="بوستر المشروع" class="current-image-preview">
                     <?php else: ?>
                         <p style="color: #666; font-size: 14px;">لا توجد صورة بوستر مرفوعة لهذا المشروع.</p>
                     <?php endif; ?>
@@ -245,7 +254,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <?php if(!empty($project['pdf_file'])): ?>
                             <div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 5px; border: 1px solid #c7d2fe;">
                                 <span style="color: #10b981; font-weight: bold;">✓ يوجد ملف مرفوع:</span> 
-                                <a href="uploads/documents/<?php echo $project['pdf_file']; ?>" target="_blank" style="color: #2563eb; text-decoration: underline;">معاينة التوثيق الحالي</a>
+                                <a href="<?php echo htmlspecialchars(project_document_href($project['pdf_file'])); ?>" target="_blank" style="color: #2563eb; text-decoration: underline;">معاينة التوثيق الحالي</a>
                             </div>
                         <?php else: ?>
                             <p style="color: #666; font-size: 14px; margin-bottom: 10px;">لا يوجد ملف توثيق مرفق حالياً.</p>
@@ -262,7 +271,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <?php if(!empty($project['project_poster_pdf'])): ?>
                             <div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 5px; border: 1px solid #c7d2fe;">
                                 <span style="color: #10b981; font-weight: bold;">✓ يوجد ملف مرفوع:</span> 
-                                <a href="uploads/documents/<?php echo $project['project_poster_pdf']; ?>" target="_blank" style="color: #2563eb; text-decoration: underline;">معاينة البوستر الحالي</a>
+                                <a href="<?php echo htmlspecialchars(project_document_href($project['project_poster_pdf'])); ?>" target="_blank" style="color: #2563eb; text-decoration: underline;">معاينة البوستر الحالي</a>
                             </div>
                         <?php else: ?>
                             <p style="color: #666; font-size: 14px; margin-bottom: 10px;">لا يوجد ملف بوستر PDF مرفق حالياً.</p>

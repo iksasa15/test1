@@ -1,6 +1,7 @@
 <?php
 session_start();
 include 'db_connect.php';
+require_once __DIR__ . '/helpers.php';
 
 if (isset($_SESSION['admin_logged_in'])) {
 } else if (!isset($_SESSION['user_id'])) {
@@ -46,7 +47,7 @@ if (!$project) {
         <div class="details-grid">
             <div class="main-content">
                 <section class="project-gallery">
-                    <img src="uploads/<?php echo $project['image_url'] ? $project['image_url'] : 'placeholder.jpg'; ?>" class="main-image" onerror="this.src='https://via.placeholder.com/800x450'">
+                    <img src="<?php echo htmlspecialchars(project_public_src($project['image_url'] ?? '', 'placeholder.jpg')); ?>" class="main-image" onerror="this.src='https://via.placeholder.com/800/450'">
                 </section>
                 
                 <section class="project-section">
@@ -70,7 +71,7 @@ if (!$project) {
                 <section class="project-section" style="margin-top: 30px;">
                     <h2>بوستر المشروع</h2>
                     <div style="text-align: center; background: #f9fafb; padding: 20px; border-radius: 8px; border: 1px solid #eee;">
-                        <img src="uploads/<?php echo htmlspecialchars($project['project_poster']); ?>" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" alt="بوستر المشروع">
+                        <img src="<?php echo htmlspecialchars(project_public_src($project['project_poster'] ?? '', 'placeholder.jpg')); ?>" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" alt="بوستر المشروع">
                     </div>
                 </section>
                 <?php endif; ?>
@@ -83,13 +84,13 @@ if (!$project) {
                         
                         <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
                             <?php if(!empty($project['pdf_file'])): ?>
-                                <a href="uploads/documents/<?php echo htmlspecialchars($project['pdf_file']); ?>" download class="btn btn-primary" style="background-color: #10b981; padding: 12px 25px; font-size: 1.1rem; border: none; color: white; text-decoration: none; border-radius: 5px;">
+                                <a href="<?php echo htmlspecialchars(project_document_href($project['pdf_file'] ?? '')); ?>" download class="btn btn-primary" style="background-color: #10b981; padding: 12px 25px; font-size: 1.1rem; border: none; color: white; text-decoration: none; border-radius: 5px;">
                                     📥 تحميل وثيقة المشروع
                                 </a>
                             <?php endif; ?>
 
                             <?php if(!empty($project['project_poster_pdf'])): ?>
-                                <a href="uploads/documents/<?php echo htmlspecialchars($project['project_poster_pdf']); ?>" download class="btn btn-primary" style="background-color: #3b82f6; padding: 12px 25px; font-size: 1.1rem; border: none; color: white; text-decoration: none; border-radius: 5px;">
+                                <a href="<?php echo htmlspecialchars(project_document_href($project['project_poster_pdf'] ?? '')); ?>" download class="btn btn-primary" style="background-color: #3b82f6; padding: 12px 25px; font-size: 1.1rem; border: none; color: white; text-decoration: none; border-radius: 5px;">
                                     🖼️ تحميل بوستر المشروع (PDF)
                                 </a>
                             <?php endif; ?>

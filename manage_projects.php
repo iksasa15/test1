@@ -1,6 +1,7 @@
 <?php
 session_start();
 include 'db_connect.php';
+require_once __DIR__ . '/helpers.php';
 
 if (!isset($_SESSION['admin_logged_in'])) {
     header("Location: login_admin.php");
@@ -71,7 +72,7 @@ $total_projects = $conn->query("SELECT COUNT(*) as count FROM projects")->fetch_
 
                         if ($result->num_rows > 0) {
                             while($row = $result->fetch_assoc()) {
-                                $pic = (!empty($row['image_url']) && $row['image_url'] != 'default.jpg') ? "uploads/" . $row['image_url'] : "https://via.placeholder.com/60x40?text=بدون";
+                                $pic = project_card_image_src($row['image_url'] ?? '');
                                 $date = date('Y-m-d', strtotime($row['created_at'] ?? 'now')); // افتراض وجود created_at
                                 
                                 echo "<tr>";

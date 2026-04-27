@@ -1,6 +1,7 @@
 <?php 
 session_start();
-include 'db_connect.php'; 
+include 'db_connect.php';
+require_once __DIR__ . '/helpers.php';
 
 $limit = 6;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? intval($_GET['page']) : 1;
@@ -318,7 +319,7 @@ $total_departments = $conn->query("SELECT COUNT(DISTINCT department) as count FR
 
             if ($result->num_rows > 0) {
                 while($row = $result->fetch_assoc()) {
-                    $img_src = (!empty($row['image_url']) && $row['image_url'] != 'default.jpg') ? "uploads/".$row['image_url'] : "https://via.placeholder.com/400x200?text=بدون+صورة";
+                    $img_src = project_card_image_src($row['image_url'] ?? '');
                     ?>
                     <div class="card">
                         <img src="<?php echo $img_src; ?>" class="card-img" alt="صورة المشروع">

@@ -1,6 +1,7 @@
 <?php
 session_start();
 include 'db_connect.php';
+require_once __DIR__ . '/helpers.php';
 
 if (!isset($_SESSION['admin_logged_in'])) {
     header("Location: login.php");
@@ -19,27 +20,32 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         $row = $result->fetch_assoc();
         
         // 1. Delete main project image
-        if (!empty($row['image_url']) && $row['image_url'] != 'default.jpg') {
-            $image_path = "uploads/" . $row['image_url'];
-            if (file_exists($image_path)) unlink($image_path);
+        if (!empty($row['image_url']) && $row['image_url'] != 'default.jpg' && !project_is_remote_url($row['image_url'])) {
+            $image_path = 'uploads/' . $row['image_url'];
+            if (file_exists($image_path)) {
+                unlink($image_path);
+            }
         }
 
-        // 2. Delete poster image
-        if (!empty($row['project_poster'])) {
-            $poster_image_path = "uploads/" . $row['project_poster'];
-            if (file_exists($poster_image_path)) unlink($poster_image_path);
+        if (!empty($row['project_poster']) && !project_is_remote_url($row['project_poster'])) {
+            $poster_image_path = 'uploads/' . $row['project_poster'];
+            if (file_exists($poster_image_path)) {
+                unlink($poster_image_path);
+            }
         }
 
-        // 3. Delete main documentation PDF
-        if (!empty($row['pdf_file'])) {
-            $pdf_path = "uploads/documents/" . $row['pdf_file'];
-            if (file_exists($pdf_path)) unlink($pdf_path);
+        if (!empty($row['pdf_file']) && !project_is_remote_url($row['pdf_file'])) {
+            $pdf_path = 'uploads/documents/' . $row['pdf_file'];
+            if (file_exists($pdf_path)) {
+                unlink($pdf_path);
+            }
         }
 
-        // 4. Delete poster PDF
-        if (!empty($row['project_poster_pdf'])) {
-            $poster_pdf_path = "uploads/documents/" . $row['project_poster_pdf'];
-            if (file_exists($poster_pdf_path)) unlink($poster_pdf_path);
+        if (!empty($row['project_poster_pdf']) && !project_is_remote_url($row['project_poster_pdf'])) {
+            $poster_pdf_path = 'uploads/documents/' . $row['project_poster_pdf'];
+            if (file_exists($poster_pdf_path)) {
+                unlink($poster_pdf_path);
+            }
         }
 
         // Delete the project record from the database
