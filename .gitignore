@@ -1,0 +1,14 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# مجلد الرفع: نحتفظ بهيكل المجلدات فقط
+uploads/*
+!uploads/.gitkeep
+!uploads/profiles/
+uploads/profiles/*
+!uploads/profiles/.gitkeep
+!uploads/documents/
+uploads/documents/*
+!uploads/documents/.gitkeep
