@@ -2,14 +2,21 @@
 $mysqlHost = getenv('MYSQLHOST');
 $mysqlHost = ($mysqlHost === false) ? '' : trim($mysqlHost);
 
-// صورة Docker هذا المشروع: الملفات تحت /app — Railway لا يضمن وجود /.dockerenv
-$mustUseRailwayMysql = ($mysqlHost === '') && (__DIR__ === '/app' || file_exists('/.dockerenv'));
+// على Railway تُحقن متغيرات مثل RAILWAY_PROJECT_ID — أقوى من الاعتماد على مسار /app فقط
+$onRailway = (getenv('RAILWAY_PROJECT_ID') !== false && getenv('RAILWAY_PROJECT_ID') !== '')
+    || (getenv('RAILWAY_ENVIRONMENT') !== false && getenv('RAILWAY_ENVIRONMENT') !== '');
+
+$mustUseRailwayMysql = ($mysqlHost === '') && (
+    $onRailway
+    || __DIR__ === '/app'
+    || file_exists('/.dockerenv')
+);
 
 if ($mustUseRailwayMysql) {
     die(
-        'قاعدة البيانات غير مربوطة: Railway → خدمة التطبيق (PHP) → Variables → أضف من خدمة MySQL: ' .
-        'MYSQLHOST، MYSQLPORT، MYSQLUSER، MYSQLPASSWORD، MYSQLDATABASE (Reference). ' .
-        'ثم Redeploy. إن كان النشر من GitHub: ادفع آخر commit من المستودع.'
+        'قاعدة البيانات غير مربوطة: Railway → خدمة التطبيق (PHP) → Variables → أضف مراجع من MySQL: ' .
+        'MYSQLHOST، MYSQLPORT، MYSQLUSER، MYSQLPASSWORD، MYSQLDATABASE. ثم Redeploy. ' .
+        '(تأكد أن النشر من Git آخر main أو نفّذ railway up بعد git pull.)'
     );
 }
 
