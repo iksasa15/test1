@@ -227,39 +227,6 @@ $total_departments = $conn->query("SELECT COUNT(DISTINCT department) as count FR
                 gap: 20px;
             }
         }
-
-        .design-sketches-cta {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 22px;
-            padding: 14px 26px;
-            background: linear-gradient(135deg, #1e293b 0%, #334155 55%, #0f172a 100%);
-            color: #fff !important;
-            border-radius: 14px;
-            text-decoration: none !important;
-            font-weight: 700;
-            font-size: 0.95rem;
-            box-shadow: 0 8px 28px rgba(15, 23, 42, 0.28);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .design-sketches-cta:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 14px 36px rgba(15, 23, 42, 0.35);
-        }
-        .nav-sketches-link {
-            padding: 6px 14px !important;
-            border-radius: 999px;
-            background: linear-gradient(135deg, #4f46e5, #6366f1);
-            color: #fff !important;
-            font-weight: 600;
-            font-size: 0.88rem;
-        }
-        .nav-sketches-link:hover {
-            opacity: 0.95;
-        }
     </style>
 </head>
 <body>
@@ -274,7 +241,6 @@ $total_departments = $conn->query("SELECT COUNT(DISTINCT department) as count FR
 
         <div class="nav-links" id="navLinks">
             <a href="index.php">الرئيسية</a>
-            <a href="design_sketches.php" class="nav-sketches-link" title="مخططات وسكِتشات الواجهات">سكِتشات التصميم</a>
             
             <?php if(isset($_SESSION['user_id'])): ?>
                 <div class="user-header-info">
@@ -314,9 +280,6 @@ $total_departments = $conn->query("SELECT COUNT(DISTINCT department) as count FR
                     <a href="index.php" style="display:flex; align-items:center; justify-content:center; padding: 12px 20px; background: #fee2e2; color: #ef4444; border-radius: 8px; text-decoration: none; font-weight: bold;">إلغاء</a>
                 <?php endif; ?>
             </form>
-            <div style="margin-top: 8px;">
-                <a href="design_sketches.php" class="design-sketches-cta">عرض سكِتشات ومخططات الصفحات</a>
-            </div>
         </div>
         
         <div class="hero-image">
@@ -409,7 +372,6 @@ $total_departments = $conn->query("SELECT COUNT(DISTINCT department) as count FR
                         <li><a href="profile.php">ملفي الشخصي</a></li>
                     <?php endif; ?>
                     <li><a href="login_admin.php">دخول الإدارة</a></li>
-                    <li><a href="design_sketches.php">سكِتشات التصميم</a></li>
                     <?php if(isset($_SESSION['user_id'])): ?>
                         <li><a href="#" onclick="openContactModal(); return false;">تواصل معنا</a></li>
                     <?php endif; ?>
