@@ -1,17 +1,19 @@
 <?php
-$servername = getenv('MYSQLHOST');
-if ($servername === false || $servername === '') {
-    // داخل Docker (ومنها Railway) لا يوجد MySQL على localhost بدون متغيرات الخدمة
-    if (file_exists('/.dockerenv')) {
-        die(
-            'قاعدة البيانات غير مربوطة: في Railway → خدمة التطبيق → Variables أضف مراجع MySQL: ' .
-            'MYSQLHOST، MYSQLPORT، MYSQLUSER، MYSQLPASSWORD، MYSQLDATABASE. ' .
-            'ثم تأكد أن آخر كود مرفوع إلى Git وأن النشر اكتمل (إعادة نشر يدوية إن لزم).'
-        );
-    }
-    // محليًا بدون Docker: 127.0.0.1 يجبر TCP
-    $servername = '127.0.0.1';
+$mysqlHost = getenv('MYSQLHOST');
+$mysqlHost = ($mysqlHost === false) ? '' : trim($mysqlHost);
+
+// صورة Docker هذا المشروع: الملفات تحت /app — Railway لا يضمن وجود /.dockerenv
+$mustUseRailwayMysql = ($mysqlHost === '') && (__DIR__ === '/app' || file_exists('/.dockerenv'));
+
+if ($mustUseRailwayMysql) {
+    die(
+        'قاعدة البيانات غير مربوطة: Railway → خدمة التطبيق (PHP) → Variables → أضف من خدمة MySQL: ' .
+        'MYSQLHOST، MYSQLPORT، MYSQLUSER، MYSQLPASSWORD، MYSQLDATABASE (Reference). ' .
+        'ثم Redeploy. إن كان النشر من GitHub: ادفع آخر commit من المستودع.'
+    );
 }
+
+$servername = $mysqlHost !== '' ? $mysqlHost : '127.0.0.1';
 
 $username = getenv('MYSQLUSER') ?: 'root';
 $password = getenv('MYSQLPASSWORD');
